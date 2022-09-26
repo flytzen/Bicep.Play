@@ -3,6 +3,7 @@ var systemName = 'fl-cdn'
 var repoUrl = 'https://github.com/Azure-Samples/app-service-web-html-get-started.git'
 
 // TODO: Add logging to log analytics of relevant things from the Front Door
+// TODO: This is unfinished - need to add routes etc
 
 // Putting this up here to test creating a shared profile used by different environments
 resource frontdoorProfile 'Microsoft.Cdn/profiles@2021-06-01' = {
