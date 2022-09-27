@@ -65,12 +65,6 @@ resource webapp 'Microsoft.Web/sites@2020-12-01' = {
   }
 }
 
-// You would probabbly have one or more of these, specific to a particular environment
-resource mainEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2021-06-01' = {
-  parent: frontdoorProfile
-  name: '${systemName}-ep'
-  location: 'Global'
-}
 
 // This is where we start to reference the web app
 resource originGroup 'Microsoft.Cdn/profiles/originGroups@2022-05-01-preview' = {
@@ -95,4 +89,43 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2022-05-01-preview' = 
     }
   }
 }
+
+// You would probabbly have one or more of these, specific to a particular environment
+resource mainEndpoint 'Microsoft.Cdn/profiles/afdEndpoints@2021-06-01' = {
+  parent: frontdoorProfile
+  name: '${systemName}-ep'
+  location: 'Global'
+  properties: {
+    enabledState: 'Enabled'
+  }
+
+  resource routeToWebApp 'routes' = {
+    name: '${webapp.name}-route'
+    dependsOn: [
+      originGroup::webappOrigin
+    ]
+    properties: {
+      originGroup: {
+        id: originGroup.id
+      }
+      supportedProtocols: [
+        'Http'
+        'Https'
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      forwardingProtocol: 'HttpsOnly'
+      linkToDefaultDomain: 'Enabled'
+      httpsRedirect: 'Enabled'
+      cacheConfiguration: {
+        queryStringCachingBehavior: 'UseQueryString'
+        compressionSettings: {
+          isCompressionEnabled: false
+        }
+      }
+    }
+  }
+}
+
 

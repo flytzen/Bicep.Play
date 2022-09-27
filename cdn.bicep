@@ -89,6 +89,12 @@ resource originGroup 'Microsoft.Cdn/profiles/originGroups@2022-05-01-preview' = 
       azureOrigin: {
         id: webapp.id
       }
+      hostName: webapp.properties.defaultHostName
+      httpPort: 80
+      httpsPort: 443
+      originHostHeader: webapp.properties.defaultHostName
+      priority: 1
+      weight: 1000
     }
   }
 }
